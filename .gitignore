@@ -1,0 +1,114 @@
+# Terraform #
+# ##############################################################################
+# Arquivos de estado local e backups
+*.tfstate
+*.tfstate.backup
+
+exports.txt
+
+# Arquivos de configuração local (NÃO ADICIONE AO GIT)
+terraform.tfvars
+terraform.tfvars.json
+*.auto.tfvars
+*.auto.tfvars.json
+
+# Arquivos de log de falhas
+crash.log
+crash.*.log
+
+# Arquivos de lock de provedores
+.terraform.lock.hcl
+
+# Diretório de plugins e módulos do Terraform
+.terraform/
+
+# Arquivos de override (geralmente locais)
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+
+# Configurações da CLI do Terraform
+.terraformrc
+terraform.rc
+
+
+# Python / Ansible #
+# ##############################################################################
+# Ambiente virtual
+venv/
+venv-kubespray/
+.venv/
+
+# Cache do Python
+__pycache__/
+*.pyc
+
+# Arquivos de repetição do Ansible
+*.retry
+
+
+# Artefatos do Projeto #
+# ##############################################################################
+# Inventário gerado pelo Terraform
+inventory.ini
+
+
+# Arquivos de Editor e IDE #
+# ##############################################################################
+.vscode/
+.idea/
+*.swp
+*.swo
+*.bak
+*.tmp
+
+
+# Arquivos de Sistema Operacional #
+# ##############################################################################
+.DS_Store
+Thumbs.db
+
+
+# Logs e Chaves (Segurança Extra) #
+# ##############################################################################
+*.log
+*.pem
+*.key
+id_rsa
+
+# Terraform
+# Ignora arquivos de estado local, logs de plano e backups.
+.terraform/
+.terraform.lock.hcl
+*.tfvars
+*.tfplan
+*.tfstate
+*.tfstate.backup
+
+# Kubespray
+# Kubespray usa o Ansible e gera arquivos de cache e outros arquivos temporários.
+# Ignora caches do Ansible e logs.
+.ansible/
+*.retry
+
+# Variáveis de Ambiente e Arquivos de Configuração Local
+# Previne que credenciais, IPs e outros segredos sejam enviados.
+# A sua variável 'exports' ou qualquer outro arquivo de variáveis local deve ser ignorado.
+.env
+exports
+ansible_hosts_generated
+inventory/mycluster/hosts.yaml
+# Adicione aqui qualquer outro arquivo que contenha credenciais ou IPs
+# Exemplo: inventory/mycluster/vars.yml
+
+# Logs e Arquivos de Debug
+# Ignora logs de execução e debug.
+*.log
+*.err
+
+# Arquivos Temporários
+*~
+*.tmp
+*.bak
+*.swp
