@@ -9,26 +9,38 @@ jobs:
   deploy:
     runs-on: self-hosted
 
-    env:
-      TF_VAR_proxmox_password: ${{ secrets.TF_VAR_proxmox_password }}
-      TF_VAR_node_name: ${{ secrets.TF_VAR_node_name }}
-      TF_VAR_base_template_id: ${{ secrets.TF_VAR_base_template_id }}
-      TF_VAR_node_address: ${{ secrets.TF_VAR_node_address }}
-      TF_VAR_ssh_private_key: ${{ secrets.TF_VAR_ssh_private_key }}
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
       # Terraform está na raiz do repo
       - name: Initialize Terraform
-        run: terraform init -lock=false -input=false
-          
+        run: |
+          terraform init -lock=false -input=false
+
       - name: Terraform Plan
-        run: terraform plan -input=false
+        run: |
+          terraform plan \
+            -var="proxmox_endpoint=${{ secrets.TF_VAR_proxmox_endpoint }}" \
+            -var="proxmox_user=${{ secrets.TF_VAR_proxmox_user }}" \
+            -var="proxmox_password=${{ secrets.TF_VAR_proxmox_password }}" \
+            -var="ssh_private_key=${{ secrets.TF_VAR_ssh_private_key }}" \
+            -var="node_name=${{ secrets.TF_VAR_node_name }}" \
+            -var="base_template_id=${{ secrets.TF_VAR_base_template_id }}" \
+            -var="node_address=${{ secrets.TF_VAR_node_address }}" \
+            -input=false
         
       - name: Terraform Apply
-        run: terraform apply -auto-approve -input=false
+        run: |
+          terraform apply -auto-approve \
+            -var="proxmox_endpoint=${{ secrets.TF_VAR_proxmox_endpoint }}" \
+            -var="proxmox_user=${{ secrets.TF_VAR_proxmox_user }}" \
+            -var="proxmox_password=${{ secrets.TF_VAR_proxmox_password }}" \
+            -var="ssh_private_key=${{ secrets.TF_VAR_ssh_private_key }}" \
+            -var="node_name=${{ secrets.TF_VAR_node_name }}" \
+            -var="base_template_id=${{ secrets.TF_VAR_base_template_id }}" \
+            -var="node_address=${{ secrets.TF_VAR_node_address }}" \
+            -input=false
 
       # Kubespray está em ./kubespray
       - name: Deploy Kubernetes with Kubespray
