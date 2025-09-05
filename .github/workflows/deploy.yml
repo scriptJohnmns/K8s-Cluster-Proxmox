@@ -1,0 +1,53 @@
+name: Deploy Proxmox K8s Cluster
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'terraform/**'
+      - 'kubespray/**'
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+
+    env:
+      TF_VAR_proxmox_password: ${{ secrets.TF_VAR_proxmox_password }}
+      TF_VAR_node_name: ${{ secrets.TF_VAR_node_name }}
+      TF_VAR_base_template_id: ${{ secrets.TF_VAR_base_template_id }}
+      TF_VAR_node_address: ${{ secrets.TF_VAR_node_address }}
+      TF_VAR_ssh_private_key: ${{ secrets.TF_VAR_ssh_private_key }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Initialize Terraform
+        working-directory: ./terraform
+        run: |
+          terraform init -lock=false -input=false
+          
+      - name: Terraform Plan
+        working-directory: ./terraform
+        run: terraform plan -input=false
+        
+      - name: Terraform Apply
+        working-directory: ./terraform
+        run: terraform apply -auto-approve -input=false
+
+      - name: Deploy Kubernetes with Kubespray
+        working-directory: ./kubespray
+        run: |
+          source .venv-kubespray/bin/activate
+          
+          echo "${{ secrets.TF_VAR_SSH_PRIVATE_KEY }}" > /tmp/ansible-key.pem
+          chmod 600 /tmp/ansible-key.pem
+          
+          ansible-playbook cluster.yml \
+            -i inventory/k8s-cluster/hosts.ini \
+            --become \
+            --private-key /tmp/ansible-key.pem \
+            -u ubuntu
+
+          rm /tmp/ansible-key.pem
