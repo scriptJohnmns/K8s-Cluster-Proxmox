@@ -7,10 +7,6 @@
 exports.txt
 
 # Arquivos de configuração local (NÃO ADICIONE AO GIT)
-terraform.tfvars
-terraform.tfvars.json
-*.auto.tfvars
-*.auto.tfvars.json
 
 # Arquivos de log de falhas
 crash.log
@@ -81,7 +77,6 @@ id_rsa
 # Ignora arquivos de estado local, logs de plano e backups.
 .terraform/
 .terraform.lock.hcl
-*.tfvars
 *.tfplan
 *.tfstate
 *.tfstate.backup

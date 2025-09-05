@@ -13,42 +13,33 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # Terraform está na raiz do repo
       - name: Initialize Terraform
-        run: |
-          terraform init -lock=false -input=false
+        run: terraform init -lock=false -input=false
 
       - name: Terraform Plan
         run: |
           terraform plan \
-            -var="proxmox_endpoint=${{ secrets.TF_VAR_proxmox_endpoint }}" \
-            -var="proxmox_user=${{ secrets.TF_VAR_proxmox_user }}" \
-            -var="proxmox_password=${{ secrets.TF_VAR_proxmox_password }}" \
-            -var="ssh_private_key=${{ secrets.TF_VAR_ssh_private_key }}" \
-            -var="node_name=${{ secrets.TF_VAR_node_name }}" \
-            -var="base_template_id=${{ secrets.TF_VAR_base_template_id }}" \
-            -var="node_address=${{ secrets.TF_VAR_node_address }}" \
+            -var="proxmox_endpoint=${{ secrets.PROXMOX_ENDPOINT }}" \
+            -var="proxmox_user=${{ secrets.PROXMOX_USER }}" \
+            -var="proxmox_password=${{ secrets.PROXMOX_PASSWORD }}" \
+            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
             -input=false
-        
+
       - name: Terraform Apply
         run: |
           terraform apply -auto-approve \
-            -var="proxmox_endpoint=${{ secrets.TF_VAR_proxmox_endpoint }}" \
-            -var="proxmox_user=${{ secrets.TF_VAR_proxmox_user }}" \
-            -var="proxmox_password=${{ secrets.TF_VAR_proxmox_password }}" \
-            -var="ssh_private_key=${{ secrets.TF_VAR_ssh_private_key }}" \
-            -var="node_name=${{ secrets.TF_VAR_node_name }}" \
-            -var="base_template_id=${{ secrets.TF_VAR_base_template_id }}" \
-            -var="node_address=${{ secrets.TF_VAR_node_address }}" \
+            -var="proxmox_endpoint=${{ secrets.PROXMOX_ENDPOINT }}" \
+            -var="proxmox_user=${{ secrets.PROXMOX_USER }}" \
+            -var="proxmox_password=${{ secrets.PROXMOX_PASSWORD }}" \
+            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
             -input=false
 
-      # Kubespray está em ./kubespray
       - name: Deploy Kubernetes with Kubespray
         working-directory: ./kubespray
         run: |
           source .venv-kubespray/bin/activate
           
-          echo "${{ secrets.TF_VAR_SSH_PRIVATE_KEY }}" > /tmp/ansible-key.pem
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/ansible-key.pem
           chmod 600 /tmp/ansible-key.pem
           
           ansible-playbook cluster.yml \
