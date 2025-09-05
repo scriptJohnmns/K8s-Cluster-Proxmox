@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-    paths:
-      - 'terraform/**'
-      - 'kubespray/**'
 
 jobs:
   deploy:
@@ -51,5 +48,3 @@ jobs:
             -u ubuntu
 
           rm /tmp/ansible-key.pem
-
-          #scriptjohn
