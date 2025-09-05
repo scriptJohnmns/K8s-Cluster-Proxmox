@@ -19,22 +19,24 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
+        with:
+          path: 'repo'
 
       - name: Initialize Terraform
-        working-directory: ./terraform
+        working-directory: ./repo/terraform
         run: |
           terraform init -lock=false -input=false
           
       - name: Terraform Plan
-        working-directory: ./terraform
+        working-directory: ./repo/terraform
         run: terraform plan -input=false
         
       - name: Terraform Apply
-        working-directory: ./terraform
+        working-directory: ./repo/terraform
         run: terraform apply -auto-approve -input=false
 
       - name: Deploy Kubernetes with Kubespray
-        working-directory: ./kubespray
+        working-directory: ./repo/kubespray
         run: |
           source .venv-kubespray/bin/activate
           
@@ -48,5 +50,3 @@ jobs:
             -u ubuntu
 
           rm /tmp/ansible-key.pem
-
-          #teste
