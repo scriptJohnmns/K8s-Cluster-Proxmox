@@ -1,10 +1,5 @@
-
-
 disk_datastore      = "vms2"
 cloudinit_datastore = "vms2"
-
-
-
 
 masters = {
   "manager1-k8s" = { vm_id=207, cpu_cores=2, cpu_type="host", memory_mb=4096, disk_size=50, ipv4_address="192.168.18.207/24" }

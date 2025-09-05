@@ -17,8 +17,7 @@ module "masters" {
   network_bridge      = "vmbr0"
   ipv4_address        = each.value.ipv4_address
   username            = "ubuntu"
-  ssh_public_key      = var.ssh_public_key
-  ssh_private_key     = var.ssh_private_key
+  ssh_public_key      = var.ssh_public_key  
 }
 
 module "workers" {
@@ -40,8 +39,7 @@ module "workers" {
   network_bridge      = "vmbr0"
   ipv4_address        = each.value.ipv4_address
   username            = "ubuntu"
-  ssh_public_key      = var.ssh_public_key
-  ssh_private_key     = var.ssh_private_key
+  ssh_public_key      = var.ssh_public_key  
 }
 
 # --- GERADOR DE INVENTÁRIO ANSIBLE ---

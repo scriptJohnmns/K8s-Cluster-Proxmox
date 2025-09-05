@@ -56,10 +56,6 @@ variable "ssh_public_key" {
   description = "Path to the SSH public key file."
 }
 
-variable "ssh_private_key" {
-  type = string
-}
-
 variable "network_gateway" {
   type = string
 }
