@@ -19,24 +19,20 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        with:
-          path: 'repo'
 
+      # Terraform está na raiz do repo
       - name: Initialize Terraform
-        working-directory: ./repo/terraform
-        run: |
-          terraform init -lock=false -input=false
+        run: terraform init -lock=false -input=false
           
       - name: Terraform Plan
-        working-directory: ./repo/terraform
         run: terraform plan -input=false
         
       - name: Terraform Apply
-        working-directory: ./repo/terraform
         run: terraform apply -auto-approve -input=false
 
+      # Kubespray está em ./kubespray
       - name: Deploy Kubernetes with Kubespray
-        working-directory: ./repo/kubespray
+        working-directory: ./kubespray
         run: |
           source .venv-kubespray/bin/activate
           
