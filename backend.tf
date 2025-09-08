@@ -5,7 +5,11 @@ terraform {
     bucket   = "k8s-terraform-state"  
     key      = "terraform.tfstate"   
     region   = "placeholder"
-    endpoint = "http://192.168.18.211:9000"    
+    
+    endpoints = {
+      s3 = "http://192.168.18.211:9000"
+    }
+        
 
     # 5. Configurações essenciais para MinIO... uns skips...
     skip_credentials_validation = true

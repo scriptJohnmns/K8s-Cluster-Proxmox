@@ -1,4 +1,5 @@
-#E isso aqui o
+# Arquivo: .github/workflows/deploy.yml
+
 name: Deploy Proxmox K8s Cluster
 
 on:
@@ -10,6 +11,7 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
+
     env:
       AWS_ACCESS_KEY_ID: ${{ secrets.MINIO_ACCESS_KEY }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.MINIO_SECRET_KEY }}
@@ -19,17 +21,25 @@ jobs:
       TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
-      - name: Install Dependencies
-        run: sudo apt-get update && sudo apt-get install -y unzip
+      # --- PASSO DE DEBUG ADICIONADO ---
+      - name: Debug Environment Variables
+        run: |
+          echo "Verificando se as variáveis de ambiente foram carregadas..."
+          if [ -n "$AWS_ACCESS_KEY_ID" ]; then
+            echo "-> Credencial MINIO_ACCESS_KEY foi encontrada."
+          else
+            echo "-> ERRO: Credencial MINIO_ACCESS_KEY NÃO foi encontrada ou está vazia."
+          fi
+          if [ -n "$AWS_SECRET_ACCESS_KEY" ]; then
+            echo "-> Credencial MINIO_SECRET_ACCESS_KEY foi encontrada."
+          else
+            echo "-> ERRO: Credencial MINIO_SECRET_ACCESS_KEY NÃO foi encontrada ou está vazia."
+          fi
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v2
-        with:
-          terraform_version: 1.7.0
-
-      - name: Terraform Init
+      - name: Initialize Terraform
         run: terraform init
 
       - name: Terraform Apply
@@ -37,8 +47,19 @@ jobs:
 
       - name: Deploy Kubernetes with Kubespray
         run: |
+          # Ativa seu ambiente virtual Python pré-configurado no runner
           source .venv-kubespray/bin/activate
+          
+          # Cria um arquivo temporário com a chave SSH privada a partir dos secrets
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/ansible-key.pem
           chmod 600 /tmp/ansible-key.pem
-          ansible-playbook kubespray/cluster.yml -i inventory.ini --become --private-key /tmp/ansible-key.pem -u ubuntu
+          
+          # Executa o playbook do Kubespray usando o inventário dinâmico
+          ansible-playbook kubespray/cluster.yml \
+            -i inventory.ini \
+            --become \
+            --private-key /tmp/ansible-key.pem \
+            -u ubuntu
+
+          # Limpa o arquivo de chave temporário por segurança
           rm /tmp/ansible-key.pem
