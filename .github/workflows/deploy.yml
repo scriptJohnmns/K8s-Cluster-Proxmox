@@ -34,25 +34,26 @@ jobs:
 
       - name: Setup Kubespray Environment and Deploy
         run: |
-          # 1. Cria o ambiente virtual Python
+          # 1. Prepara o ambiente Python
           python3 -m venv .venv-kubespray
-
-          # 2. Ativa o ambiente virtual
           source .venv-kubespray/bin/activate
-
-          # 3. Instala as dependências do Kubespray (Ansible, etc.)
           pip3 install -r kubespray/requirements.txt
-
-          # 4. Cria o arquivo temporário com a chave SSH privada
+          
+          # 2. Prepara a chave SSH
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/ansible-key.pem
           chmod 600 /tmp/ansible-key.pem
           
-          # 5. Executa o playbook do Kubespray
-          ansible-playbook kubespray/cluster.yml \
-            -i inventory.ini \
+          # --- A CORREÇÃO FINAL ESTÁ AQUI ---
+          # 3. Entra na pasta do Kubespray antes de executar
+          cd kubespray
+          
+          # 4. Executa o playbook de dentro da pasta correta
+          # Note que o caminho para o inventário agora é ../inventory.ini
+          ansible-playbook cluster.yml \
+            -i ../inventory.ini \
             --become \
             --private-key /tmp/ansible-key.pem \
             -u ubuntu
 
-          # 6. Limpa o arquivo de chave temporário
+          # 5. Limpa a chave temporária
           rm /tmp/ansible-key.pem
