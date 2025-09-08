@@ -35,6 +35,7 @@ terraform.rc
 venv/
 venv-kubespray/
 .venv/
+.env
 
 # Cache do Python
 __pycache__/

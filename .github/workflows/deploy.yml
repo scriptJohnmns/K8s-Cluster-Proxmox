@@ -4,48 +4,46 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: self-hosted
+
+    # Centralizando todas as variáveis e segredos aqui
+    env:
+      # Segredos para o backend do MinIO (usados pelo 'terraform init')
+      AWS_ACCESS_KEY_ID: ${{ secrets.MINIO_ACCESS_KEY }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.MINIO_SECRET_KEY }}
+      
+      # Segredos para as variáveis do Terraform
+      TF_VAR_proxmox_endpoint: ${{ secrets.PROXMOX_ENDPOINT }}
+      TF_VAR_proxmox_user: ${{ secrets.PROXMOX_USER }}
+      TF_VAR_proxmox_password: ${{ secrets.PROXMOX_PASSWORD }}
+      TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
 
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
       - name: Initialize Terraform
-        run: terraform init -lock=false -input=false
-
-      - name: Terraform Plan
-        run: |
-          terraform plan \
-            -var="proxmox_endpoint=${{ secrets.PROXMOX_ENDPOINT }}" \
-            -var="proxmox_user=${{ secrets.PROXMOX_USER }}" \
-            -var="proxmox_password=${{ secrets.PROXMOX_PASSWORD }}" \
-            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
-            -var-file="terraform.tfvars" \
-            -input=false
+        run: terraform init
 
       - name: Terraform Apply
-        run: |
-          terraform apply -auto-approve \
-            -var="proxmox_endpoint=${{ secrets.PROXMOX_ENDPOINT }}" \
-            -var="proxmox_user=${{ secrets.PROXMOX_USER }}" \
-            -var="proxmox_password=${{ secrets.PROXMOX_PASSWORD }}" \
-            -var="ssh_public_key=${{ secrets.SSH_PUBLIC_KEY }}" \
-            -var-file="terraform.tfvars" \
-            -input=false
+        # O comando fica limpo. Todas as variáveis vêm do 'env' acima e do terraform.tfvars
+        run: terraform apply -auto-approve
 
       - name: Deploy Kubernetes with Kubespray
-        working-directory: ./kubespray
         run: |
+          # Ativa seu ambiente virtual Python
           source .venv-kubespray/bin/activate
           
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > /tmp/ansible-key.pem
           chmod 600 /tmp/ansible-key.pem
           
-          ansible-playbook cluster.yml \
-            -i inventory/k8s-cluster/hosts.ini \
+          #Usando o inventory.ini gerado pelo Terraform
+          ansible-playbook kubespray/cluster.yml \
+            -i ../inventory.ini \
             --become \
             --private-key /tmp/ansible-key.pem \
             -u ubuntu

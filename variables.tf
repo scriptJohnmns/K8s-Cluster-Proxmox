@@ -67,10 +67,6 @@ variable "ssh_public_key" {
   type = string
 }
 
-variable "ssh_private_key" {
-  type = string
-}
-
 variable "network_gateway" {
   type        = string
   description = "O endereço IP do gateway da rede (seu roteador)."
