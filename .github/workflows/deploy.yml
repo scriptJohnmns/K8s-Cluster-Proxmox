@@ -5,7 +5,16 @@ on:
     branches:
       - main
   workflow_dispatch:
-
+    # Adiciondo uma entrada manual para escolher a ação
+    inputs:
+      action:
+        description: 'Ação a ser executada (apply ou destroy)'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
 jobs:
   deploy:
     runs-on: self-hosted
