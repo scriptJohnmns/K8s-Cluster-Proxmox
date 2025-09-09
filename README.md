@@ -6,8 +6,6 @@
 
 # Cluster Kubernetes em Proxmox com Terraform e Kubespray (IaC)
 
-![GitHub Actions Workflow Status](https://github.com/SEU-USUARIO/SEU-REPO/actions/workflows/deploy.yml/badge.svg)
-
 Este repositório contém um projeto de Infraestrutura como Código (IaC) para provisionar e configurar um cluster Kubernetes em um ambiente Proxmox VE de forma automatizada.
 
 O projeto utiliza **Terraform** para o provisionamento da infraestrutura, **Kubespray (Ansible)** para a configuração do cluster, e **GitHub Actions** para orquestrar o pipeline de CI/CD. O estado do Terraform é gerenciado remotamente por um servidor **MinIO**.
