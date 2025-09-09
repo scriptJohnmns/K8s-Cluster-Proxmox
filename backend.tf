@@ -1,6 +1,4 @@
 # Arquivo: backend.tf 
-#vamo q vamos
-
 terraform {
   backend "s3" {   
     bucket   = "k8s-terraform-state"  
