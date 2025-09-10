@@ -1,11 +1,7 @@
-# Terraformando o Proxmox!
-
+# Cluster Kubernetes em Proxmox com Terraform e Kubespray (IaC)
 ![Terraform](https://img.shields.io/badge/Terraform-1.13.1-purple?style=for-the-badge&logo=terraform&logoColor=white")
 ![Proxmox](https://img.shields.io/badge/Proxmox_VE-8.0-orange?style=for-the-badge&logo=proxmox&logoColor=white")
 ![BPG Provider](https://img.shields.io/badge/Provider-BPG%2FProxmox-green?style=for-the-badge)
-
-# Cluster Kubernetes em Proxmox com Terraform e Kubespray (IaC)
-
 Este repositório contém um projeto de Infraestrutura como Código (IaC) para provisionar e configurar um cluster Kubernetes em um ambiente Proxmox VE de forma automatizada.
 
 O projeto utiliza **Terraform** para o provisionamento da infraestrutura, **Kubespray (Ansible)** para a configuração do cluster, e **GitHub Actions** para orquestrar o pipeline de CI/CD. O estado do Terraform é gerenciado remotamente por um servidor **MinIO**.
